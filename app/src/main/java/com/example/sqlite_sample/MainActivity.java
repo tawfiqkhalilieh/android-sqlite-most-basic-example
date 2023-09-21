@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -12,19 +13,32 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
+    DBHandler dbHandler;
+
     Button fetchAllButton;
     Button insertUserButton;
-    DBHandler dbHandler;
+
+    EditText getUserByIDInput;
+    Button getUserByIDButton;
+
+    EditText getUsersByUsersInput;
+    Button getUsersByUsernameButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbHandler = new DBHandler(MainActivity.this);
+
         fetchAllButton = findViewById(R.id.fechAll);
         insertUserButton = findViewById(R.id.insertUser);
+        getUserByIDInput = findViewById(R.id.getUserByIDInput);
+        getUserByIDButton = findViewById(R.id.getUserByID);
+        getUsersByUsersInput = findViewById(R.id.getUsersByUsernameInput);
+        getUsersByUsernameButton = findViewById(R.id.getUsersByUsername);
 
-        dbHandler = new DBHandler(MainActivity.this);
+        // TODO: show the output data in a big text area
 
         fetchAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,6 +49,40 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, users.get(0).get("username"), Toast.LENGTH_SHORT).show();
                 } catch ( Exception e ) {
                     Toast.makeText(MainActivity.this, "An error occurred while fetching users from the database", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        getUserByIDButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String inputQueryID = getUserByIDInput.getText().toString();
+                try {
+                    HashMap<String, String> user = dbHandler.getUserByID(
+                            inputQueryID != "" && inputQueryID != "" ? inputQueryID : "1"
+                    );
+                    // show simple toast to make sure it works
+                    Toast.makeText(MainActivity.this, user.get("username"), Toast.LENGTH_SHORT).show();
+                } catch ( Exception e ) {
+                    Toast.makeText(MainActivity.this, "An error occurred while fetching users from the database", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+        getUsersByUsernameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String inputQueryUsername = getUserByIDInput.getText().toString();
+                try {
+                    ArrayList<HashMap<String, String>> users = dbHandler.getUserByUsersname(
+                            "taw"
+                    );
+                    // show simple toast to make sure it works
+//                    Toast.makeText(MainActivity.this, users.get(0).get("username"), Toast.LENGTH_SHORT).show();
+                } catch ( Exception e ) {
+                    Toast.makeText(MainActivity.this,  e.toString(), Toast.LENGTH_LONG).show();
                 }
 
             }

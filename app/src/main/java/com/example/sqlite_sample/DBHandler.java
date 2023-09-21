@@ -116,6 +116,56 @@ public class DBHandler extends SQLiteOpenHelper {
         return res;
     }
 
+    public HashMap<String, String> getUserByID(String id) {
+        // on below line we are creating a
+        // database for reading our database.
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // on below line we are creating a cursor with query to read data from database.
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ID_COL + "=" + id, null);
+
+        HashMap<String, String> user = new HashMap<String, String>();
+
+        // moving our cursor to first position.
+        if (cursor.moveToFirst()) {
+            user.put("id", cursor.getString(0));
+            user.put("username", cursor.getString(1));
+            user.put("age", cursor.getString(2));
+            user.put("password", cursor.getString(3));
+        }
+
+        cursor.close();
+        return user;
+    }
+
+    public ArrayList<HashMap<String, String>> getUserByUsersname(String username) {
+        // on below line we are creating a
+        // database for reading our database.
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        ArrayList<HashMap<String, String>> res = new ArrayList<HashMap<String, String>>();
+
+        // on below line we are creating a cursor with query to read data from database.
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME  + " WHERE " + USERNAME_COL + "=" + username, null);
+
+
+        // moving our cursor to first position.
+        if (cursor.moveToFirst()) {
+            do {
+                HashMap<String, String> user = new HashMap<String, String>();
+                user.put("id", cursor.getString(0));
+                user.put("username", cursor.getString(1));
+                user.put("age", cursor.getString(2));
+                user.put("password", cursor.getString(3));
+                res.add(user);
+            } while (cursor.moveToNext());
+            // moving our cursor to next.
+        }
+
+        cursor.close();
+        return res;
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // this method is called to check if the table exists already.
